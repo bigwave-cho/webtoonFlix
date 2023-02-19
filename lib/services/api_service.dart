@@ -32,7 +32,6 @@ class ApiService {
     if (response.statusCode == 200) {
       final webtoon = jsonDecode(response.body);
       return WebtoonDetailModel.fromJson(webtoon);
-      // model은 응답받은 데이터를 decode해서 클래스화 시켜 코드 분리 해놓은거라 생각하면 됨.
     }
     throw Error();
   }
@@ -48,8 +47,6 @@ class ApiService {
       for (var episode in episodes) {
         episodesInstances.add(WebtoonEpisodeModel.fromJson(episode));
       }
-      // model은 응답받은 데이터를 decode해서 클래스화 시켜 코드 분리 해놓은거라 생각하면 됨.
-
       return episodesInstances;
     }
     throw Error();
