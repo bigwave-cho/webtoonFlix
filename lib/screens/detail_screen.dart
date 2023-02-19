@@ -3,7 +3,6 @@ import 'package:toonflix/models/webtoon_detail_model.dart';
 import 'package:toonflix/models/webtoon_episode.dart';
 import 'package:toonflix/services/api_service.dart';
 
-// 유저가 툰 클릭하면 보여줄 screen 말이 screen이지 위젯임을 명심
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
 
@@ -19,10 +18,6 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  // 아래 방법은 여전히 error
-  // Future<WebtoonDetailModel> webtoon = ApiService.getToonById(widget.id);
-
-  // date fetch 전에 이미 렌더링 될 것이기 때문에 좀 이따 할당해주기 위해 late 부여
   late Future<WebtoonDetailModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
 
@@ -39,9 +34,6 @@ class _DetailScreenState extends State<DetailScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          // stateful로 컨버트되면서 별개의 클래스가 되기 때문에
-          // widget을 통해 프로퍼티에 접근
-          // widget이 DetailScreen 위젯을 가리킴.
           widget.title,
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
         ),
@@ -58,7 +50,7 @@ class _DetailScreenState extends State<DetailScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Hero(
-                tag: widget.id, //기존 stateless였을 때는 id 였음. stateful되면서 widget.id
+                tag: widget.id,
                 child: Container(
                   width: 250,
                   clipBehavior: Clip.hardEdge,
@@ -76,6 +68,46 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          FutureBuilder(
+            future: webtoon,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        snapshot.data!.about,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '${snapshot.data!.genre} / ${snapshot.data!.age}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const Text('Loading');
+            },
           ),
         ],
       ),
