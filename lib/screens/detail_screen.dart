@@ -3,6 +3,17 @@ import 'package:toonflix/models/webtoon_detail_model.dart';
 import 'package:toonflix/models/webtoon_episode.dart';
 import 'package:toonflix/services/api_service.dart';
 
+/*
+- url_launcher
+https://pub.dev/packages/url_launcher
+에피소드 탭 -> 해당 URL로 이동
+설치하고 문서에 따라 ios/ android configuration 해주기.
+
+리빌드!
+
+sms, tel mailto 등등 지원해줌
+
+ */
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
 
@@ -114,8 +125,6 @@ class _DetailScreenState extends State<DetailScreen> {
                 future: episodes,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    //ListView써도 되지만 ListView는 세팅할 것이 많음
-                    // 그래서 리스트가 적다면 Column등으로 해도 괜찮음.
                     return Column(
                       children: [
                         for (var epidsode in snapshot.data!)
