@@ -1,26 +1,31 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-// 위처럼 as로 패키지를 namespace 지정이 가능하다.
+import 'package:toonflix/models/webtoon_model.dart';
 
 class ApiService {
   final String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
   final String today = "today";
-  //api 요청을 위해 flutter는 http라는 패키지가 필요
-  // flutter pub add http  or pubspec.yaml에 직접 추가
-  void getTodaysToons() async {
-    //http패키지의 get에 인자로 들어갈 url을 Uri타입으로 parsing.
-    final url = Uri.parse('$baseUrl/$today');
 
-    // Future<Response> get(Uri url, {Map<String, String>? headers})
-    // 리턴 타입이 Future임을 알 수 있음.
-    // Future은 await와 함께 사용함.
-    // Future 타입은 현재가 아닌 미래에 받을 결과 값의 타입을 알려주는 것이고
-    // 요청이 완료되었을 때 Response라는 타입을 반환함을 알려줌.
+//async함수는 Future타입을 반환
+  Future<List<WebtoonModel>> getTodaysToons() async {
+    // async : 비동기 함수로 await 지정 시 해당 await문은 동기적으로 실행됨.
+    List<WebtoonModel> webtoonInstances = [];
+    final url = Uri.parse('$baseUrl/$today');
     final response = await http.get(url);
-    //Response response : response의 타입이 Response임을 알 수 있음.
 
     if (response.statusCode == 200) {
-      print(response.body);
-      return;
+      //response의 body프로퍼티의 타입은 String임을 확인.
+      //따라서 json 으로 decode -> dynamic타입으로 변환(any)해서 반환
+      final List<dynamic> webtoons = jsonDecode(response.body);
+      for (var webtoon in webtoons) {
+        //webtoon -> {title:...}
+        //api로부터 json을 WebtoonModle의 named constructor fromJson을 통해서 인스턴스 생성.
+        final toon = WebtoonModel.fromJson(webtoon);
+        //모델 클래스를 통해 초기화된 클래스를 toon에 할당하여 인스턴스 생성.
+        webtoonInstances.add(toon);
+      }
+      return webtoonInstances;
     }
     throw Error();
   }
