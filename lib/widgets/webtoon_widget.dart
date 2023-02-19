@@ -14,15 +14,12 @@ class Webtoon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 제스쳐 이벤트 감지하기
     return GestureDetector(
       onTap: () {
-        //route: DetailScreen같은 Stateless Widget을 애니메이션효과로
-        // 감싸서 스크린처럼 보이도록 만들어줌.
         Navigator.push(
           context,
           MaterialPageRoute(
-            fullscreenDialog: true, //화면 전환 수평 수직 결정
+            fullscreenDialog: true, //추가 true로 놓으면 아래에서 나오고 뒤로가기 버튼도 X로 바뀜
             builder: (context) => DetailScreen(
               title: title,
               thumb: thumb,
@@ -33,20 +30,25 @@ class Webtoon extends StatelessWidget {
       },
       child: Column(
         children: [
-          Container(
-            width: 250,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 15,
-                  offset: const Offset(10, 10),
-                  color: Colors.black.withOpacity(0.5),
-                )
-              ],
+          // Hero : 두 화면 사이에 애니메이션을 주는 컴포넌트.
+          // 1. 첫 화면에 widget id를 태그로 가진 Hero 감싸기
+          Hero(
+            tag: id,
+            child: Container(
+              width: 250,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 15,
+                    offset: const Offset(10, 10),
+                    color: Colors.black.withOpacity(0.5),
+                  )
+                ],
+              ),
+              child: Image.network(thumb),
             ),
-            child: Image.network(thumb),
           ),
           const SizedBox(
             height: 10,
